@@ -12,16 +12,13 @@ Tinytest.add 'computedFields - external dependencies', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
 
-  authors.computedFields.add 'postCount',
-    dependencies:
-      posts:
-        collection: posts
-        findId: (post) -> post.authorId
-        update: (author, post) ->
-          return if @isUpdate
-          inc = 1
-          inc = inc * -1 if @isRemove
-          @set inc
+  authors.computedFields.add('postCount').addDependency posts,
+    findId: (post) -> post.authorId
+    update: (author, post) ->
+      return if @isUpdate
+      inc = 1
+      inc = inc * -1 if @isRemove
+      @set author.postCount + inc
 
   authorId = authors.insert name: 'max'
   posts.insert
