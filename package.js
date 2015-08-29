@@ -10,13 +10,13 @@ Package.onUse(function(api) {
   api.use([
     'coffeescript',
     'underscore',
-    'matb33:collection-hooks@0.7.14'
+    'lai:collection-extensions@0.1.4',
+    'matb33:collection-hooks@0.7.14',
   ], 'server');
 
   api.addFiles([
     'lib/computed-fields.coffee',
   ], 'server');
-  api.export('ComputedFields','server');
 });
 
 
