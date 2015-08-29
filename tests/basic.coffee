@@ -18,7 +18,7 @@ Tinytest.add 'computedFields - external dependencies', (test) ->
       return if @isUpdate
       inc = 1
       inc = inc * -1 if @isRemove
-      @set author.postCount + inc
+      @set (author.postCount or 0) + inc
 
   authorId = authors.insert name: 'max'
   posts.insert
