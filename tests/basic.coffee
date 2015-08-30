@@ -8,7 +8,7 @@ Tinytest.add 'ComputedFields - Basic', (test) ->
   post = posts.findOne postId
   test.equal post.updateCount, 2
 
-Tinytest.add 'computedFields - external dependencies', (test) ->
+Tinytest.add 'ComputedFields - external dependencies', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
 
@@ -47,7 +47,7 @@ Tinytest.add 'computedFields - external dependencies', (test) ->
   test.equal author.postCount, 0
 
 
-Tinytest.add 'computedFields - simple field', (test) ->
+Tinytest.add 'ComputedFields - simple field', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
 
