@@ -47,6 +47,7 @@ class ComputedField
         callUpdate.call this, currentDoc
       if @previous? and previousDoc = findDoc @transform(@previous)
         callUpdate.call this, previousDoc
+    return this
 
   simple: (collection, fieldName, setMethod) ->
     field = this
@@ -63,10 +64,12 @@ class ComputedField
         _this = _.extend this, increment: increment
         value = setMethod.call _this, doc, externalDoc
         @set value
+    return this
   increment: (collection, fieldName, incMethod) ->
     field = this
     @simple collection, fieldName, (doc, externalDoc) ->
       (doc[field.name] or 0) + @increment
+    return this
 
 addHooks = (collection, method) ->
   callMethod = (type) -> (userId, doc, fieldNames) ->
