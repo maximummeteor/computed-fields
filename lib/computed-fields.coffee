@@ -17,8 +17,8 @@ class ComputedField
   constructor: (@collection, @name, @updateMethod) ->
     field = this
     return unless @updateMethod?
-    callUpdate = (method) -> (userId, doc, fieldNames) ->
-      thisValue = field._getThis this, doc, userId, fieldNames, method
+    callUpdate = (type) -> (userId, doc, fieldNames) ->
+      thisValue = field._getThis this, doc, userId, fieldNames, type
       field.updateMethod.call thisValue, @transform()
     @collection.after.insert callUpdate 'insert'
     @collection.after.update callUpdate 'update'
@@ -40,9 +40,9 @@ class ComputedField
     findDoc = (doc) ->
       _id = options.findId(doc)
       field.collection.findOne _id: _id
-    callUpdate = (method) -> (userId, doc, fieldNames) ->
+    callUpdate = (type) -> (userId, doc, fieldNames) ->
       fieldDoc = findDoc doc
-      thisValue = field._getThis this, fieldDoc, userId, fieldNames, method
+      thisValue = field._getThis this, fieldDoc, userId, fieldNames, type
       options.update.call thisValue, fieldDoc, @transform()
     collection.after.insert callUpdate 'insert'
     collection.after.update callUpdate 'update'
