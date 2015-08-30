@@ -108,6 +108,10 @@ Like `simple`, but designed for incrementations/decrementations.. Here's an exam
   });
 ````
 
+
+## License
+Licensed under MIT license. Copyright (c) 2015 Max Nowack
+
 ## Contributions
 
 Contributions are welcome. Please open issues and/or file Pull Requests.
