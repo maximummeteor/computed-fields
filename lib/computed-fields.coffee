@@ -49,6 +49,22 @@ class ComputedField
       if @previous? and previousDoc = findDoc @transform(@previous)
         callUpdate.call this, previousDoc
 
+  simple: (collection, fieldName, setMethod) ->
+    field = this
+    @addDependency collection,
+      findId: (externalDoc) -> externalDoc[fieldName]
+      update: (doc, externalDoc) ->
+        if @isInsert or @previous[fieldName] isnt doc._id
+          increment = 1
+        else if @isRemove or
+        (@previous[fieldName] is doc._id and externalDoc[fieldName] isnt doc._id)
+          increment = -1
+        else return
+
+        _this = _.extend this, increment: increment
+        value = setMethod.call _this, doc, externalDoc
+        @set value
+
 addHooks = (collection, method) ->
   callMethod = (type) -> (userId, doc, fieldNames) ->
     method.call this, type, userId, doc, fieldNames
