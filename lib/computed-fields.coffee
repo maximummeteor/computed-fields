@@ -1,6 +1,5 @@
 class ComputedFields
-  fields: {}
-  constructor: (@collection) ->
+  constructor: (@collection) -> @fields = {}
   add: (name, updateMethod) ->
     check name, String
     check updateMethod, Match.Optional Function
