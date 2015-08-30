@@ -70,7 +70,7 @@ class ComputedField
   increment: (collection, fieldName, incMethod) ->
     field = this
     @simple collection, fieldName, (doc, externalDoc) ->
-      (doc[field.name] or 0) + @increment
+      (doc[field.name] or 0) + incMethod.call this, doc, externalDoc
     return this
 
 addHooks = (collection, method) ->
