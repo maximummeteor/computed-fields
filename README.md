@@ -7,16 +7,14 @@ Let's think you have two collections, authors and posts. Posts have one author.
 You want to display the number of posts an author has written on the author's page. Normally in Meteor you would publish the posts for an author and do a `Posts.find({authorId: '...'}).count()`. But if an author has written a large number of posts, it can be slow.
 At this point, it's better to use computed fields instead of doing the computation on-the-fly.
 What if you have a field called `postCount` in the authors collection that holds the number of posts of an author and updates itself automatically?
-With this package, you can achieve this with a few lines of code:
+With this package, you can achieve this with one line of code:
 
 ````javascript
   var Posts = new Mongo.Collection('posts');
   var Authors = new Mongo.Collection('authors');
 
   // on server side
-  Authors.computedFields.add('postCount').increment(Posts, 'authorId', function(){
-    return this.increment;
-  });
+  Authors.computedFields.add('postCount').count(Posts, 'authorId');
 ````
 
 ## Installation
@@ -53,6 +51,7 @@ The second parameter is optional and specifies a function with the basic computa
 |addDependency(`collection`, `options`)|Does a computation depending on a other collection. This method takes the other collection as the first parameter and an options-object as the second one:<ul><li>`findId(relatedDoc)`: Function to get the relation between the two collections. Must return an `_id` of the collection, in which the computed field is.</li><li>`update(currentDoc, relatedDoc)`: Function to update the computed field. See above for the value of `this`</li></ul> |
 |simple(`collection`, `referenceFieldName`, `update`)|Does a computation depending on a other collection (a simpler approach). It takes the following parameters:<ul><li>`collection`: the other collection</li><li>`referenceFieldName`: the name of the field which contains the `_id` of the document (e.g. `authorId`).</li><li>`update(currentDoc, relatedDoc)`: function to update the computed field. Must return the new value for the computed field. See above for the value of `this`. For this function, `this` will be extended with the `increment` property. `this.increment` contains `1` if an related document was added and `-1` if a related document was removed.</li></ul>|
 |increment(`collection`, `referenceFieldName`, `update`)|Same like `simple`, but the return value of the `update` function will be added to the current value instead of overwriting it. |
+|count(`collection`, `referenceFieldName`)|The simplest approach. Specially for `count` properties. Works internally with `increment` and returns `this.increment`|
 
 
 ## Examples
@@ -100,12 +99,18 @@ This approach is much simpler. Here's an example how a computed `postCount` prop
   });
 ````
 
-#### simple
+#### increment
 Like `simple`, but designed for incrementations/decrementations.. Here's an example how a computed `postCount` property could be achieved with `increment`.
 ````javascript
   Authors.computedFields.add('postCount').increment(Posts, 'authorId', function(author, post) {
     return this.increment;
   });
+````
+
+#### count
+The simplest approach, designed for `count` properties. Here's an example how a computed `postCount` property could be achieved with `count`.
+````javascript
+  Authors.computedFields.add('postCount').count(Posts, 'authorId');
 ````
 
 

@@ -72,6 +72,8 @@ class ComputedField
     @simple collection, fieldName, (doc, externalDoc) ->
       (doc[field.name] or 0) + incMethod.call this, doc, externalDoc
     return this
+  count: (collection, fieldName) ->
+    @increment collection, fieldName, (doc, externalDoc) -> @increment
 
 addHooks = (collection, method) ->
   callMethod = (type) -> (userId, doc, fieldNames) ->
