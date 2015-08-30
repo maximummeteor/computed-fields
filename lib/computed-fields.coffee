@@ -24,6 +24,7 @@ class ComputedField
     isUpdate: type is 'update'
     isInsert: type is 'insert'
     isRemove: type is 'remove'
+    previous: hook.transform hook.previous
     set: (value) =>
       field = {}
       field[@name] = value
@@ -39,9 +40,14 @@ class ComputedField
       _id = options.findId(doc)
       field.collection.findOne _id: _id
     addHooks collection, (type, userId, doc, fieldNames) ->
-      fieldDoc = findDoc doc
-      thisValue = field._getThis this, fieldDoc, userId, fieldNames, type
-      options.update.call thisValue, fieldDoc, @transform()
+      callUpdate = (fieldDoc) ->
+        thisValue = field._getThis this, fieldDoc, userId, fieldNames, type
+        options.update.call thisValue, fieldDoc, @transform()
+
+      if doc? and currentDoc = findDoc @transform()
+        callUpdate.call this, currentDoc
+      if @previous? and previousDoc = findDoc @transform(@previous)
+        callUpdate.call this, previousDoc
 
 addHooks = (collection, method) ->
   callMethod = (type) -> (userId, doc, fieldNames) ->
