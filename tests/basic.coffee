@@ -46,14 +46,14 @@ Tinytest.add 'ComputedFields - external dependencies', (test) ->
   author = authors.findOne authorId
   test.equal author.postCount, 0
 
-
-Tinytest.add 'ComputedFields - simple field', (test) ->
+Tinytest.add 'ComputedFields - simple computation', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
 
   authors.computedFields.add(
     'postCount'
-  ).simple posts, 'authorId', -> return @increment
+  ).simple posts, 'authorId', (author) ->
+    (author.postCount or 0) + @increment
 
   authorId = authors.insert name: 'max'
   postId = posts.insert
