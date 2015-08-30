@@ -16,11 +16,10 @@ Tinytest.add 'computedFields - external dependencies', (test) ->
     findId: (post) -> post.authorId
     update: (author, post) ->
       if @isInsert or @previous.authorId isnt author._id
-        inc = 1
+        @set (author.postCount or 0) + 1
       else if @isRemove or
       (@previous.authorId is author._id and post.authorId isnt author._id)
-        inc = -1
-      @set (author.postCount or 0) + inc
+        @set (author.postCount or 0) - 1
 
   authorId = authors.insert name: 'max'
   postId = posts.insert
