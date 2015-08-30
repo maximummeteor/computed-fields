@@ -13,6 +13,7 @@ With this package, you can achieve this with a few lines of code:
   var Posts = new Mongo.Collection('posts');
   var Authors = new Mongo.Collection('authors');
 
+  // on server side
   Authors.computedFields.add('postCount').increment(Posts, 'authorId', function(){
     return this.increment;
   });
@@ -25,7 +26,7 @@ With this package, you can achieve this with a few lines of code:
 
 ## Usage
 
-You can add an computed field with `*collection*.computedFields.add(name, [calculation])`.
+You can add an computed field with `*collection*.computedFields.add(name, [calculation])` (on serverside only).
 The first parameter `name` specify how the field should be named. It's possible to specify sub-objects with `.` (e.g. `subobject.commentsCount`)
 The second parameter is optional and specifies a function with the basic computation. It will be executed on `insert`, `update` and `remove` of documents in the specified collection. It gets the affected document as the first parameter.
 ````javascript
