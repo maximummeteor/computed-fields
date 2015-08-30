@@ -17,12 +17,11 @@ class ComputedField
   constructor: (@collection, @name, @updateMethod) ->
     field = this
     return unless @updateMethod?
-    @collection.after.insert (userId, doc, fieldNames) ->
-      thisValue = field._getThis this, doc, userId, fieldNames, 'insert'
+    callUpdate = (method) -> (userId, doc, fieldNames) ->
+      thisValue = field._getThis this, doc, userId, fieldNames, method
       field.updateMethod.call thisValue, @transform()
-    @collection.after.update (userId, doc, fieldNames) ->
-      thisValue = field._getThis this, doc, userId, fieldNames, 'update'
-      field.updateMethod.call thisValue, @transform()
+    @collection.after.insert callUpdate 'insert'
+    @collection.after.update callUpdate 'update'
   _getThis: (hook, doc, userId, fieldNames, type) ->
     isUpdate: type is 'update'
     isInsert: type is 'insert'
@@ -41,18 +40,13 @@ class ComputedField
     findDoc = (doc) ->
       _id = options.findId(doc)
       field.collection.findOne _id: _id
-    collection.after.insert (userId, doc, fieldNames) ->
+    callUpdate = (method) -> (userId, doc, fieldNames) ->
       fieldDoc = findDoc doc
-      thisValue = field._getThis this, fieldDoc, userId, fieldNames, 'insert'
+      thisValue = field._getThis this, fieldDoc, userId, fieldNames, method
       options.update.call thisValue, fieldDoc, @transform()
-    collection.after.update (userId, doc, fieldNames) ->
-      fieldDoc = findDoc doc
-      thisValue = field._getThis this, fieldDoc, userId, fieldNames, 'update'
-      options.update.call thisValue, fieldDoc, @transform()
-    collection.after.remove (userId, doc, fieldNames) ->
-      fieldDoc = findDoc doc
-      thisValue = field._getThis this, fieldDoc, userId, fieldNames, 'remove'
-      options.update.call thisValue, fieldDoc, @transform()
+    collection.after.insert callUpdate 'insert'
+    collection.after.update callUpdate 'update'
+    collection.after.remove callUpdate 'remove'
 
 Meteor.addCollectionExtension (name, options) ->
   @computedFields = new ComputedFields this
