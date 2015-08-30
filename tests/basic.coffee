@@ -80,6 +80,39 @@ Tinytest.add 'ComputedFields - simple computation', (test) ->
   author = authors.findOne authorId
   test.equal author.postCount, 0
 
+Tinytest.add 'ComputedFields - simple increment', (test) ->
+  posts = new Mongo.Collection null
+  authors = new Mongo.Collection null
+
+  authors.computedFields.add(
+    'postCount'
+  ).increment posts, 'authorId', (author) -> @increment
+
+  authorId = authors.insert name: 'max'
+  postId = posts.insert
+    name: 'test'
+    authorId: authorId
+  author = authors.findOne authorId
+  test.equal author.postCount, 1
+
+  postId2 = posts.insert
+    name: 'test2'
+    authorId: authorId
+  author = authors.findOne authorId
+  test.equal author.postCount, 2
+
+  posts.update postId, $set: test: 1
+  author = authors.findOne authorId
+  test.equal author.postCount, 2
+
+  posts.update postId, $set: authorId: 'test123'
+  author = authors.findOne authorId
+  test.equal author.postCount, 1
+
+  posts.remove postId2
+  author = authors.findOne authorId
+  test.equal author.postCount, 0
+
 #Test API:
 #test.isFalse(v, msg)
 #test.isTrue(v, msg)

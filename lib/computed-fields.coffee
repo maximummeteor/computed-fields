@@ -63,6 +63,10 @@ class ComputedField
         _this = _.extend this, increment: increment
         value = setMethod.call _this, doc, externalDoc
         @set value
+  increment: (collection, fieldName, incMethod) ->
+    field = this
+    @simple collection, fieldName, (doc, externalDoc) ->
+      (doc[field.name] or 0) + @increment
 
 addHooks = (collection, method) ->
   callMethod = (type) -> (userId, doc, fieldNames) ->
