@@ -17,11 +17,9 @@ class ComputedField
   constructor: (@collection, @name, @updateMethod) ->
     field = this
     return unless @updateMethod?
-    callUpdate = (type) -> (userId, doc, fieldNames) ->
+    addHooks collection, (type, userId, doc, fieldNames) ->
       thisValue = field._getThis this, doc, userId, fieldNames, type
       field.updateMethod.call thisValue, @transform()
-    @collection.after.insert callUpdate 'insert'
-    @collection.after.update callUpdate 'update'
   _getThis: (hook, doc, userId, fieldNames, type) ->
     isUpdate: type is 'update'
     isInsert: type is 'insert'
@@ -40,13 +38,17 @@ class ComputedField
     findDoc = (doc) ->
       _id = options.findId(doc)
       field.collection.findOne _id: _id
-    callUpdate = (type) -> (userId, doc, fieldNames) ->
+    addHooks collection, (type, userId, doc, fieldNames) ->
       fieldDoc = findDoc doc
       thisValue = field._getThis this, fieldDoc, userId, fieldNames, type
       options.update.call thisValue, fieldDoc, @transform()
-    collection.after.insert callUpdate 'insert'
-    collection.after.update callUpdate 'update'
-    collection.after.remove callUpdate 'remove'
+
+addHooks = (collection, method) ->
+  callMethod = (type) -> (userId, doc, fieldNames) ->
+    method.call this, type, userId, doc, fieldNames
+  collection.after.insert callMethod 'insert'
+  collection.after.update callMethod 'update'
+  collection.after.remove callMethod 'remove'
 
 Meteor.addCollectionExtension (name, options) ->
   @computedFields = new ComputedFields this
