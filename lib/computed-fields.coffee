@@ -24,6 +24,8 @@ class ComputedField
     isInsert: type is 'insert'
     isRemove: type is 'remove'
     previous: hook.transform hook.previous
+    userId: userId
+    fieldNames: fieldNames
     set: (value) =>
       field = {}
       field[@name] = value
