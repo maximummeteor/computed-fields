@@ -46,7 +46,13 @@ class ComputedField
       thisValue = field._getThis this, fieldDoc, userId, fieldNames, 'insert'
       options.update.call thisValue, fieldDoc, @transform()
     collection.after.update (userId, doc, fieldNames) ->
-
+      fieldDoc = findDoc doc
+      thisValue = field._getThis this, fieldDoc, userId, fieldNames, 'update'
+      options.update.call thisValue, fieldDoc, @transform()
+    collection.after.remove (userId, doc, fieldNames) ->
+      fieldDoc = findDoc doc
+      thisValue = field._getThis this, fieldDoc, userId, fieldNames, 'remove'
+      options.update.call thisValue, fieldDoc, @transform()
 
 Meteor.addCollectionExtension (name, options) ->
   @computedFields = new ComputedFields this
