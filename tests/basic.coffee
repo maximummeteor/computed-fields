@@ -8,6 +8,16 @@ Tinytest.add 'ComputedFields - Basic', (test) ->
   post = posts.findOne postId
   test.equal post.updateCount, 2
 
+Tinytest.add 'ComputedFields - Subobject', (test) ->
+  posts = new Mongo.Collection null
+  posts.computedFields.add 'computed.updateCount', (post) ->
+    @set (post.computed?.updateCount or 0) + 1
+  postId = posts.insert name: 'test'
+  posts.update postId, $set: name: 'passed'
+
+  post = posts.findOne postId
+  test.equal post.computed.updateCount, 2
+
 Tinytest.add 'ComputedFields - external dependencies', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
