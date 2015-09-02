@@ -33,6 +33,7 @@ class ComputedField
     previous: hook.transform hook.previous
     userId: userId
     fieldNames: fieldNames
+    computedField: @name
     set: (value) =>
       field = {}
       field[@name] = value

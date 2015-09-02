@@ -39,6 +39,7 @@ The second parameter is optional and specifies a function with the basic computa
       * previous (object)
       * userId: (string)
       * fieldNames ([string])
+      * computedField: (string)
       * set (function)
     */
     this.set(newValue); // use `set` to update the field
