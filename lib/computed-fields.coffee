@@ -59,6 +59,9 @@ class ComputedField
     check options,
       findId: Function
       update: Function
+      updateOnPrevious: Match.Optional Boolean
+
+    options.updateOnPrevious = true unless options.updateOnPrevious?
 
     field = this
     findDocs = (doc) ->
@@ -82,6 +85,9 @@ class ComputedField
 
       if doc? and currentDocs = findDocs @transform()
         callUpdate.call this, currentDocs
+
+      return unless options.updateOnPrevious
+
       if @previous? and previousDocs = findDocs @transform(@previous)
         callUpdate.call this, previousDocs
     return this
