@@ -11,6 +11,28 @@ class ComputedFields
     check name, String
     @fields[name] or @add(name)
 
+  rebuild: ->
+    collections = []
+    for name, field of @fields
+      collections.push field.collection unless field.collection in collections
+      for dependency in field._dependencies
+        unless dependency.collection in collections
+          collections.push dependency.collection
+
+    for collection in collections
+      collection.find().forEach (doc) =>
+        for name, field of @fields
+          if field.collection is collection and field.updateMethod?
+            thisValue = field._getThis null, doc, null, [], 'insert'
+            field.updateMethod.call thisValue, doc
+          for dependency in field._dependencies when dependency.collection is collection
+            if fieldDocs = dependency.findDocs doc
+              for fieldDoc in fieldDocs
+                thisValue = field._getThis null, fieldDoc, null, [], 'insert'
+                dependency.update.call thisValue, fieldDoc, doc
+
+
+
 
 class ComputedField
   constructor: (@collection, @name, @updateMethod) ->
@@ -44,7 +66,7 @@ class ComputedField
     if @updateMethod?
       @collection.find().forEach (doc) ->
         thisValue = field._getThis null, doc, null, [], 'insert'
-        field.updateMethod.call thisValue, @transform()
+        field.updateMethod.call thisValue, doc
 
     for dependency in @_dependencies
       dependency.collection.find().forEach (doc) ->

@@ -249,6 +249,30 @@ Tinytest.add 'ComputedFields - no update on previous', (test) ->
   author = authors.findOne authorId
   test.equal author.postCount, 1
 
+Tinytest.add 'ComputedFields - rebuild all', (test) ->
+  posts = new Mongo.Collection null
+  authors = new Mongo.Collection null
+
+  authorId = authors.insert name: 'max'
+  postId = posts.insert
+    name: 'test'
+    authorId: authorId
+
+  postId2 = posts.insert
+    name: 'test2'
+    authorId: authorId
+
+  posts.update postId, $set: test: 1
+  posts.update postId, $set: authorId: 'test123'
+
+  field = authors.computedFields.add(
+    'postCount'
+  ).count posts, 'authorId'
+  authors.computedFields.rebuild()
+
+  author = authors.findOne authorId
+  test.equal author.postCount, 1
+
 #Test API:
 #test.isFalse(v, msg)
 #test.isTrue(v, msg)
