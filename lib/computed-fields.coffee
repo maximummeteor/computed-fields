@@ -47,10 +47,11 @@ class ComputedField
 
     for dependency in @_dependencies
       dependency.collection.find().forEach (doc) ->
-        return unless fieldDoc = dependency.findDoc doc
+        return unless fieldDocs = dependency.findDocs doc
 
-        thisValue = field._getThis null, fieldDoc, null, [], 'insert'
-        dependency.update.call thisValue, fieldDoc, doc
+        for fieldDoc in fieldDocs
+          thisValue = field._getThis null, fieldDoc, null, [], 'insert'
+          dependency.update.call thisValue, fieldDoc, doc
 
   addDependency: (collection, options) ->
     check collection, Match.Any
@@ -59,23 +60,29 @@ class ComputedField
       update: Function
 
     field = this
-    findDoc = (doc) ->
-      _id = options.findId(doc)
-      field.collection.findOne _id: _id
+    findDocs = (doc) ->
+      ids = options.findId(doc)
+      ids = [ids] unless _.isArray ids
+      docs = for _id in ids
+        field.collection.findOne _id: _id
+      docs = _.without docs, undefined, null
+      return if docs.length is 0
+      return docs
 
     @_dependencies.push _.extend _.clone(options),
       collection: collection
-      findDoc: findDoc
+      findDocs: findDocs
 
     addHooks collection, (type, userId, doc, fieldNames) ->
-      callUpdate = (fieldDoc) ->
-        thisValue = field._getThis this, fieldDoc, userId, fieldNames, type
-        options.update.call thisValue, fieldDoc, @transform()
+      callUpdate = (fieldDocs) ->
+        for fieldDoc in fieldDocs
+          thisValue = field._getThis this, fieldDoc, userId, fieldNames, type
+          options.update.call thisValue, fieldDoc, @transform()
 
-      if doc? and currentDoc = findDoc @transform()
-        callUpdate.call this, currentDoc
-      if @previous? and previousDoc = findDoc @transform(@previous)
-        callUpdate.call this, previousDoc
+      if doc? and currentDocs = findDocs @transform()
+        callUpdate.call this, currentDocs
+      if @previous? and previousDocs = findDocs @transform(@previous)
+        callUpdate.call this, previousDocs
     return this
 
   simple: (collection, fieldName, setMethod) ->

@@ -180,6 +180,36 @@ Tinytest.add 'ComputedFields - rebuild', (test) ->
   author = authors.findOne authorId
   test.equal author.postCount, 1
 
+Tinytest.add 'ComputedFields - update multiple', (test) ->
+  posts = new Mongo.Collection null
+  authors = new Mongo.Collection null
+
+  authors.computedFields.add('postCount').addDependency posts,
+    findId: (post) -> post.authorIds
+    update: (author, post) ->
+      if @isInsert or @previous.authorId isnt author._id
+        @set (author.postCount or 0) + 1
+      else if @isRemove or
+      (@previous.authorId is author._id and post.authorId isnt author._id)
+        @set (author.postCount or 0) - 1
+
+  author1Id = authors.insert name: 'max'
+  author2Id = authors.insert name: 'luis'
+
+  postId = posts.insert
+    name: 'test'
+    authorIds: [author1Id, author2Id]
+
+  postId = posts.insert
+    name: 'test'
+    authorIds: [author1Id]
+
+  author1 = authors.findOne author1Id
+  author2 = authors.findOne author2Id
+
+  test.equal author1.postCount, 2
+  test.equal author2.postCount, 1
+
 #Test API:
 #test.isFalse(v, msg)
 #test.isTrue(v, msg)
