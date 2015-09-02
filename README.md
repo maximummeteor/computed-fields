@@ -28,7 +28,7 @@ You can add an computed field with `*collection*.computedFields.add(name, [calcu
 The first parameter `name` specify how the field should be named. It's possible to specify sub-objects with `.` (e.g. `subobject.commentsCount`)
 The second parameter is optional and specifies a function with the basic computation. It will be executed on `insert`, `update` and `remove` of documents in the specified collection. It gets the affected document as the first parameter.
 ````javascript
-  Posts.computedFields.add('commentsCount') // returns a ComputedField instance
+  Posts.computedFields.add('commentsCount'); // returns a ComputedField instance
 
   Posts.computedFields.add('updateCount', function(post){
     /*  
@@ -43,6 +43,11 @@ The second parameter is optional and specifies a function with the basic computa
     */
     this.set(newValue); // use `set` to update the field
   });
+````
+
+It's also possible to get a computed field, after it was created
+````javascript
+  Posts.computedFields.get('commentsCount'); // returns the ComputedField instance
 ````
 
 ### ComputedField
