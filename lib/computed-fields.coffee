@@ -15,11 +15,18 @@ class ComputedFields
 class ComputedField
   constructor: (@collection, @name, @updateMethod) ->
     field = this
+    @_dependencies = []
     return unless @updateMethod?
     addHooks collection, (type, userId, doc, fieldNames) ->
       thisValue = field._getThis this, doc, userId, fieldNames, type
       field.updateMethod.call thisValue, @transform()
+
   _getThis: (hook, doc, userId, fieldNames, type) ->
+    unless hook?
+      hook =
+        transform: (obj) -> obj
+        previous: {}
+
     isUpdate: type is 'update'
     isInsert: type is 'insert'
     isRemove: type is 'remove'
@@ -31,15 +38,35 @@ class ComputedField
       field[@name] = value
       @collection.direct.update doc._id, $set: field
 
+  rebuild: ->
+    field = this
+    if @updateMethod?
+      @collection.find().forEach (doc) ->
+        thisValue = field._getThis null, doc, null, [], 'insert'
+        field.updateMethod.call thisValue, @transform()
+
+    for dependency in @_dependencies
+      dependency.collection.find().forEach (doc) ->
+        return unless fieldDoc = dependency.findDoc doc
+
+        thisValue = field._getThis null, fieldDoc, null, [], 'insert'
+        dependency.update.call thisValue, fieldDoc, doc
+
   addDependency: (collection, options) ->
     check collection, Match.Any
     check options,
       findId: Function
       update: Function
+
     field = this
     findDoc = (doc) ->
       _id = options.findId(doc)
       field.collection.findOne _id: _id
+
+    @_dependencies.push _.extend _.clone(options),
+      collection: collection
+      findDoc: findDoc
+
     addHooks collection, (type, userId, doc, fieldNames) ->
       callUpdate = (fieldDoc) ->
         thisValue = field._getThis this, fieldDoc, userId, fieldNames, type

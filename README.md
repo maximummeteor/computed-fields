@@ -57,6 +57,7 @@ It's also possible to get a computed field, after it was created
 |simple(`collection`, `referenceFieldName`, `update`)|Does a computation depending on a other collection (a simpler approach). It takes the following parameters:<ul><li>`collection`: the other collection</li><li>`referenceFieldName`: the name of the field which contains the `_id` of the document (e.g. `authorId`).</li><li>`update(currentDoc, relatedDoc)`: function to update the computed field. Must return the new value for the computed field. See above for the value of `this`. For this function, `this` will be extended with the `increment` property. `this.increment` contains `1` if an related document was added and `-1` if a related document was removed.</li></ul>|
 |increment(`collection`, `referenceFieldName`, `update`)|Same like `simple`, but the return value of the `update` function will be added to the current value instead of overwriting it. |
 |count(`collection`, `referenceFieldName`)|The simplest approach. Specially for `count` properties. Works internally with `increment` and returns `this.increment`|
+|rebuild()|Rebuilds the computed field. Useful for migrations.|
 
 
 ## Examples
