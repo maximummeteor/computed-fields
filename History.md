@@ -1,3 +1,6 @@
+## vNEXT
+  * Support for `simple schema` and `collection2`
+
 ## v0.1.5
   * [Added missing `check` dependency](https://github.com/maximummeteor/computed-fields/commit/cf7d044f29bbf6958bdc9f44368ab56d09e132e9)
 
@@ -15,6 +18,6 @@
 ## v0.1.1
   * [Fixed bug in `incrementation` function](https://github.com/maximummeteor/computed-fields/commit/20318be48380c1880a1ba1f70e7bdcff092f723d)
   * [Added `count` method](https://github.com/maximummeteor/computed-fields/commit/0e2de54e953e5d84204936af859e14a1d1fa24e4)
-  
+
 ## v0.1.0
   * [Initial release](https://github.com/maximummeteor/computed-fields/commit/deaa1bc55c68abbe9a1a749f258d6e3446eba96b)
