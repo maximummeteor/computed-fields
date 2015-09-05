@@ -120,6 +120,78 @@ The simplest approach, designed for `count` properties. Here's an example how a 
   Authors.computedFields.add('postCount').count(Posts, 'authorId');
 ````
 
+## Support for [aldeed:collection2](https://github.com/aldeed/meteor-collection2) package
+You can define computed fields directly in your collection schema
+````javascript
+  Authors.attachSchema({
+    name: {
+      type: String
+    },
+    updateCount: { // normal computation
+      type: Number,
+      optional: true,
+      compute: function(post) {
+        current = post.updateCount or 0
+        this.set(current + 1);
+      }
+    },
+
+    postCount: { // with dependency
+      type: Number,
+      optional: true,
+      compute: {
+        dependency: {
+          collection: Posts,
+          findId: function(post){
+            // ...
+          },
+          update: function(author, post){
+            // ...
+          }
+        }
+      }
+    },
+
+    postCount: { // with simple
+      type: Number,
+      optional: true,
+      compute: {
+        simple: {
+          collection: Posts,
+          referenceFieldName: 'authorId'
+          update: function(author){
+            // ...
+          }
+        }
+      }
+    },
+
+    postCount: { // with increment
+      type: Number,
+      optional: true,
+      compute: {
+        increment: {
+          collection: Posts,
+          referenceFieldName: 'authorId'
+          update: function(author){
+            // ...
+          }
+        }
+      }
+    },
+
+    postCount: { // with count
+      type: Number,
+      optional: true,
+      compute: {
+        count: {
+          collection: Posts,
+          referenceFieldName: 'authorId'
+        }
+      }
+    },
+  });
+````
 
 ## License
 Licensed under MIT license. Copyright (c) 2015 Max Nowack
