@@ -1,5 +1,5 @@
-## vNEXT
-  * Support for `simple schema` and `collection2`
+## v0.1.6
+  * [Support for `simple schema` and `collection2`](https://github.com/maximummeteor/computed-fields/commit/34469f2a523fab4bc4d2ccef49d46069db45f95d)
 
 ## v0.1.5
   * [Added missing `check` dependency](https://github.com/maximummeteor/computed-fields/commit/cf7d044f29bbf6958bdc9f44368ab56d09e132e9)
