@@ -1,3 +1,6 @@
+## v0.1.7
+  * [Support for nested computed fields](https://github.com/maximummeteor/computed-fields/commit/52fc7085855e14e9097a54950181e9520619672a)
+
 ## v0.1.6
   * [Support for `simple schema` and `collection2`](https://github.com/maximummeteor/computed-fields/commit/34469f2a523fab4bc4d2ccef49d46069db45f95d)
 
