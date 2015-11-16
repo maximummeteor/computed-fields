@@ -39,7 +39,7 @@ class ComputedField
     field = this
     @_dependencies = []
     return unless @updateMethod?
-    addHooks collection, (type, userId, doc, fieldNames) ->
+    addHooks @collection, (type, userId, doc, fieldNames) ->
       thisValue = field._getThis this, doc, userId, fieldNames, type
       field.updateMethod.call thisValue, @transform()
 
@@ -133,7 +133,9 @@ class ComputedField
   increment: (collection, fieldName, incMethod) ->
     field = this
     @simple collection, fieldName, (doc, externalDoc) ->
-      (doc[field.name] or 0) + incMethod.call this, doc, externalDoc
+      jsonPath = Npm.require('JSONPath')
+      current = parseFloat jsonPath.eval doc, field.name
+      (current or 0) + incMethod.call this, doc, externalDoc
     return this
   count: (collection, fieldName) ->
     @increment collection, fieldName, (doc, externalDoc) -> @increment

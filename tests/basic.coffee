@@ -1,5 +1,6 @@
 Tinytest.add 'ComputedFields - Basic', (test) ->
   posts = new Mongo.Collection null
+  posts.remove {}
   posts.computedFields.add 'updateCount', (post) ->
     @set (post.updateCount or 0) + 1
   postId = posts.insert name: 'test'
@@ -10,6 +11,7 @@ Tinytest.add 'ComputedFields - Basic', (test) ->
 
 Tinytest.add 'ComputedFields - Subobject', (test) ->
   posts = new Mongo.Collection null
+  posts.remove {}
   posts.computedFields.add 'computed.updateCount', (post) ->
     @set (post.computed?.updateCount or 0) + 1
   postId = posts.insert name: 'test'
@@ -21,6 +23,8 @@ Tinytest.add 'ComputedFields - Subobject', (test) ->
 Tinytest.add 'ComputedFields - external dependencies', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
 
   authors.computedFields.add('postCount').addDependency posts,
     findId: (post) -> post.authorId
@@ -59,6 +63,8 @@ Tinytest.add 'ComputedFields - external dependencies', (test) ->
 Tinytest.add 'ComputedFields - simple computation', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
 
   authors.computedFields.add(
     'postCount'
@@ -93,6 +99,8 @@ Tinytest.add 'ComputedFields - simple computation', (test) ->
 Tinytest.add 'ComputedFields - simple increment', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
 
   authors.computedFields.add(
     'postCount'
@@ -126,6 +134,8 @@ Tinytest.add 'ComputedFields - simple increment', (test) ->
 Tinytest.add 'ComputedFields - simple count', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
 
   authors.computedFields.add(
     'postCount'
@@ -159,6 +169,8 @@ Tinytest.add 'ComputedFields - simple count', (test) ->
 Tinytest.add 'ComputedFields - rebuild', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
 
   authorId = authors.insert name: 'max'
   postId = posts.insert
@@ -183,6 +195,8 @@ Tinytest.add 'ComputedFields - rebuild', (test) ->
 Tinytest.add 'ComputedFields - update multiple', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
 
   authors.computedFields.add('postCount').addDependency posts,
     findId: (post) -> post.authorIds
@@ -213,6 +227,8 @@ Tinytest.add 'ComputedFields - update multiple', (test) ->
 Tinytest.add 'ComputedFields - no update on previous', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
 
   authors.computedFields.add('postCount').addDependency posts,
     findId: (post) -> post.authorId
@@ -252,6 +268,8 @@ Tinytest.add 'ComputedFields - no update on previous', (test) ->
 Tinytest.add 'ComputedFields - rebuild all', (test) ->
   posts = new Mongo.Collection null
   authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
 
   authorId = authors.insert name: 'max'
   postId = posts.insert
@@ -272,6 +290,41 @@ Tinytest.add 'ComputedFields - rebuild all', (test) ->
 
   author = authors.findOne authorId
   test.equal author.postCount, 1
+
+Tinytest.add 'ComputedFields - nested count', (test) ->
+  posts = new Mongo.Collection null
+  authors = new Mongo.Collection null
+  posts.remove {}
+  authors.remove {}
+
+  authors.computedFields.add(
+    'nested.postCount'
+  ).count posts, 'authorId'
+
+  authorId = authors.insert name: 'max'
+  postId = posts.insert
+    name: 'test'
+    authorId: authorId
+  author = authors.findOne authorId
+  test.equal author.nested.postCount, 1
+
+  postId2 = posts.insert
+    name: 'test2'
+    authorId: authorId
+  author = authors.findOne authorId
+  test.equal author.nested.postCount, 2
+
+  posts.update postId, $set: test: 1
+  author = authors.findOne authorId
+  test.equal author.nested.postCount, 2
+
+  posts.update postId, $set: authorId: 'test123'
+  author = authors.findOne authorId
+  test.equal author.nested.postCount, 1
+
+  posts.remove postId2
+  author = authors.findOne authorId
+  test.equal author.nested.postCount, 0
 
 #Test API:
 #test.isFalse(v, msg)

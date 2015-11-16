@@ -5,6 +5,10 @@ Package.describe({
   git: 'https://github.com/maximummeteor/computed-fields'
 });
 
+Npm.depends({
+  'JSONPath': '0.10.0',
+});
+
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.3');
   api.use([
@@ -33,6 +37,7 @@ Package.onUse(function(api) {
 Package.onTest(function (api) {
   api.use('tinytest');
   api.use('coffeescript');
+  api.use('mongo');
   api.use('aldeed:collection2@2.0.0');
   api.use('maximum:computed-fields');
 

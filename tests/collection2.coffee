@@ -1,6 +1,7 @@
 if Meteor.isServer
   Tinytest.add 'ComputedFields - Collection2 - Basic', (test) ->
     posts = new Mongo.Collection null
+    posts.remove {}
     posts.attachSchema
       updateCount:
         type: Number
@@ -16,6 +17,7 @@ if Meteor.isServer
 
   Tinytest.add 'ComputedFields - Collection2 - Subobject', (test) ->
     posts = new Mongo.Collection null
+    posts.remove {}
     posts.attachSchema
       computed:
         type: Object
@@ -35,6 +37,8 @@ if Meteor.isServer
   Tinytest.add 'ComputedFields - Collection2 - external dependencies', (test) ->
     posts = new Mongo.Collection null
     authors = new Mongo.Collection null
+    posts.remove {}
+    authors.remove {}
     authors.attachSchema
       name:
         type: String
@@ -80,6 +84,8 @@ if Meteor.isServer
   Tinytest.add 'ComputedFields - Collection2 - simple computation', (test) ->
     posts = new Mongo.Collection null
     authors = new Mongo.Collection null
+    posts.remove {}
+    authors.remove {}
 
     authors.attachSchema
       name:
@@ -122,6 +128,8 @@ if Meteor.isServer
   Tinytest.add 'ComputedFields - Collection2 - simple increment', (test) ->
     posts = new Mongo.Collection null
     authors = new Mongo.Collection null
+    posts.remove {}
+    authors.remove {}
 
     authors.attachSchema
       name:
@@ -163,6 +171,8 @@ if Meteor.isServer
   Tinytest.add 'ComputedFields - Collection2 - simple count', (test) ->
     posts = new Mongo.Collection null
     authors = new Mongo.Collection null
+    posts.remove {}
+    authors.remove {}
 
     authors.attachSchema
       name:
@@ -203,6 +213,8 @@ if Meteor.isServer
   Tinytest.add 'ComputedFields - Collection2 - update multiple', (test) ->
     posts = new Mongo.Collection null
     authors = new Mongo.Collection null
+    posts.remove {}
+    authors.remove {}
 
     authors.attachSchema
       name:
@@ -241,6 +253,8 @@ if Meteor.isServer
   Tinytest.add 'ComputedFields - Collection2 - no update on previous', (test) ->
     posts = new Mongo.Collection null
     authors = new Mongo.Collection null
+    posts.remove {}
+    authors.remove {}
 
     authors.attachSchema
       name:
@@ -288,6 +302,8 @@ if Meteor.isServer
 if Meteor.isClient
   Tinytest.add 'ComputedFields - Collection2 - Client', (test) ->
     posts = new Mongo.Collection null
+    posts.remove {}
+
     posts.attachSchema
       updateCount:
         type: Number

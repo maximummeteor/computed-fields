@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "JSONPath": {
+      "version": "0.10.0",
+      "dependencies": {
+        "underscore": {
+          "version": "1.8.3"
+        }
+      }
+    }
+  }
+}
