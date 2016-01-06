@@ -147,5 +147,5 @@ addHooks = (collection, method) ->
   collection.after.update callMethod 'update'
   collection.after.remove callMethod 'remove'
 
-Meteor.addCollectionExtension (name, options) ->
+CollectionExtensions.addExtension (name, options) ->
   @computedFields = new ComputedFields this
