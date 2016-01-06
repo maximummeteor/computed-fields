@@ -1,3 +1,7 @@
+## v0.1.8
+  * updated `lai:collection-extensions` to `v0.2.1_1`
+  * updated `matb33:collection-hooks` to `v0.8.1`
+
 ## v0.1.7
   * [Support for nested computed fields](https://github.com/maximummeteor/computed-fields/commit/52fc7085855e14e9097a54950181e9520619672a)
 
