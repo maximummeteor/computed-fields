@@ -9,6 +9,16 @@ Tinytest.add 'ComputedFields - Basic', (test) ->
   post = posts.findOne postId
   test.equal post.updateCount, 2
 
+Tinytest.add 'ComputedFields - $unset', (test) ->
+  posts = new Mongo.Collection null
+  posts.remove {}
+  posts.computedFields.add 'shouldBeUndefined', (post) -> @unset()
+  postId = posts.insert name: 'test'
+  posts.update postId, $set: shouldBeUndefined: 123
+
+  post = posts.findOne postId
+  test.equal post.shouldBeUndefined, undefined
+
 Tinytest.add 'ComputedFields - Subobject', (test) ->
   posts = new Mongo.Collection null
   posts.remove {}

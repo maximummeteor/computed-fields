@@ -57,9 +57,13 @@ class ComputedField
     fieldNames: fieldNames
     computedField: @name
     set: (value) =>
-      field = {}
-      field[@name] = value
-      @collection.direct.update doc._id, $set: field
+      $set = {}
+      $set[@name] = value
+      @collection.direct.update doc._id, {$set}
+    unset: =>
+      $unset = {}
+      $unset[@name] = 1
+      @collection.direct.update doc._id, {$unset}
 
   rebuild: ->
     field = this
