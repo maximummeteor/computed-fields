@@ -1,7 +1,7 @@
 Package.describe({
   name: 'maximum:computed-fields',
   summary: 'Meteor package for automatic computation of field values in a collection',
-  version: '0.1.8',
+  version: '0.2.1',
   git: 'https://github.com/maximummeteor/computed-fields.git'
 });
 

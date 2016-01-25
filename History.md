@@ -1,3 +1,9 @@
+## v 0.2.1
+  * fix broken atmosphere package
+
+## v0.2.0
+  * [Support for $unset](https://github.com/maximummeteor/computed-fields/commit/4efcaae4b0de501c4f213d0f4887c4e9d326a03b)
+
 ## v0.1.8
   * updated `lai:collection-extensions` to `v0.2.1_1`
   * updated `matb33:collection-hooks` to `v0.8.1`

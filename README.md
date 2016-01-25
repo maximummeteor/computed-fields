@@ -41,8 +41,10 @@ The second parameter is optional and specifies a function with the basic computa
       * fieldNames ([string])
       * computedField: (string)
       * set (function)
+      * unset (function)
     */
     this.set(newValue); // use `set` to update the field
+    this.unset(); // use `unset` to unset the field
   });
 ````
 
