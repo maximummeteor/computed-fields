@@ -1,5 +1,10 @@
 return unless Package['aldeed:collection2']? # check for collection2 package
 
+{ checkNpmVersions } = require('meteor/tmeasday:check-npm-versions')
+checkNpmVersions({
+  'simpl-schema': '1.5.x'
+}, 'maximum:computed-fields')
+
 dependency =
   collection: Match.Any
   findId: Function
@@ -22,8 +27,7 @@ count = count:
   collection: Match.Any
   referenceFieldName: String
 
-
-SimpleSchema = Package['aldeed:simple-schema'].SimpleSchema
+SimpleSchema = require('simpl-schema').default
 SimpleSchema.extendOptions
   compute: Match.Optional Match.OneOf Function, dependencies, (dependency: dependency), simple, increment, count
 

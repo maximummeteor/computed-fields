@@ -1,7 +1,7 @@
 Package.describe({
   name: 'maximum:computed-fields',
   summary: 'Meteor package for automatic computation of field values in a collection',
-  version: '0.3.0',
+  version: '1.0.0',
   git: 'https://github.com/maximummeteor/computed-fields.git'
 });
 
@@ -15,13 +15,17 @@ Package.onUse(function(api) {
     'coffeescript@2.0.0',
     'underscore',
     'check',
+    'modules',
     'lai:collection-extensions@0.2.1_1',
     'matb33:collection-hooks@0.8.1',
+    'tmeasday:check-npm-versions@0.3.2',
   ], 'server');
   api.use([
     'coffeescript',
     'underscore',
     'check',
+    'modules',
+    'tmeasday:check-npm-versions@0.3.2',
   ], 'client');
 
   api.addFiles([
